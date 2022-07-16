@@ -18,7 +18,7 @@ class Player {
   get coveredCard() {
 	return this.coveredCard;
   }
-  set coveredCard(card) {
+  set coveredCard(card) { // set player's covered card to card passed in as argument
 	this.coveredCard = card;
   } 
   get hand() {
@@ -27,6 +27,14 @@ class Player {
   set hand(card) { // set player's hand to card passed in as argument 
 	this.hand = card;
   }
+  get active() { // get player's active value
+	return this.active;
+  }
+  set active (value) { // set player's active value to value passed in as argument
+    this.active = value;
+		}
+   
+     }
 	 
 	  
 	 
