@@ -21,7 +21,13 @@ class Player {
   set coveredCard(card) {
 	this.coveredCard = card;
   } 
-	
+  get hand() {
+   	return this.hand;
+  }
+  set hand(card) { // set player's hand to card passed in as argument 
+	this.hand = card;
+  }
+	 
 	  
 	 
 		  
