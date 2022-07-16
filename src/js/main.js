@@ -14,9 +14,13 @@ class Player {
     this.hand = []; // player's hand
     this.active = true; // player's active status
   }
-  
+   // get and set properties for player object   
+  get coveredCard() {
+	return this.coveredCard;
   }
-
+  set coveredCard(card) {
+	this.coveredCard = card;
+  } 
 	
 	  
 	 
