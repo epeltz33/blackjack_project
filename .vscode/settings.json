@@ -1,5 +1,17 @@
 {
+    "files.autoSave": "onWindowChange",
 	"emmet.triggerExpansionOnTab": true,
-	"files.autoSave": "onWindowChange",
-	"editor.insertSpaces": false
+	"emmet.includeLanguages": {"javascript": "true"}, // 
+	"editor.insertSpaces": false,
+	"editor.tabCompletion": "on",
+	"editor.semanticTokenColorCustomizations": {
+	
+	},
+	"editor.acceptSuggestionOnEnter": "on",
+	"editor.suggest.shareSuggestSelections": true,
+	"editor.suggest.insertMode": "replace",
+	"workbench.settings.openDefaultSettings": false,
+	"editor.autoIndent": "full",
+	"editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+	
 }
