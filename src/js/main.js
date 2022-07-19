@@ -1,5 +1,5 @@
    
-  let firstCard = 10 
+  let firstCard = 9;
   
    let secondCard = 11
    
