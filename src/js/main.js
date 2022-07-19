@@ -48,7 +48,7 @@ let renderGame = () => {
 
     haveBlackJack = true;
   } else {
-    message = "You busted!";
+    message = "Your out of the game! You busted!";
 
     isAlive = false;
   }
