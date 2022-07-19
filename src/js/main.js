@@ -7,7 +7,9 @@
    
    let haveBlackJack = false
    
-   let message = ''
+   let message = "";
+
+   let messageEl = document.getElementById("message-el");
 //  make a variable called isAlive and assign it to true 
    let isAlive = true
 // flip its value to false in the appropriate code block 
