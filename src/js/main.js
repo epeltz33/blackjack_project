@@ -20,12 +20,7 @@ let isAlive = true;
 
 function getRandomCard() {
   let randomNumber = Math.floor(Math.random() * 13) + 1; // random number between 1 and 13 (made a mistake here)
-  if (randomNumber > 10) {
-    return 10;
-  }
-  if (randomNumber === 1) {
-    return 11;
-  }
+  return randomNumber > 10 ? 10 : randomNumber === 1 ? 11 : randomNumber;
 }
 
 let startGame = () => {
