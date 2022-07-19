@@ -13,5 +13,6 @@
 	"workbench.settings.openDefaultSettings": false,
 	"editor.autoIndent": "full",
 	"editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+	"liveServer.settings.port": 5501,
 	
 }
