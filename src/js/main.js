@@ -1,7 +1,7 @@
    
-  let firstCard = 12;
+  let firstCard = 7;
 
-  let secondCard = 11;
+  let secondCard = 8;
 
   let sum = secondCard + firstCard;
 
@@ -15,10 +15,16 @@
 
   let cardsEl = document.querySelector("#cards-el");
 
-  let isAlive = true;
+  let cards = [firstCard, secondCard];
 
+  let isAlive = true;
   const startGame = () => {
-    cardsEl.textContent = `Cards: ${firstCard}  ${secondCard} `;
+    renderGame(); // calls startGame
+  };
+
+  const renderGame = () => {
+    cardsEl.textContent = `Cards: ${cards[0]}  ${cards[1]} `;
+    // render out All the cards we have
     totalEl.textContent = `Total: ${sum} `;
     if (sum <= 20) {
       message = "Do you want to hit?";
@@ -32,7 +38,12 @@
     messageEl.textContent = message;
   };
 
-const newCard = () => {
-  console.log(`Drawing a new card from the deck`);
-   let card;
-};
+  const newCard = () => {
+    console.log(`Drawing a new card from the deck`);
+    let card = 6;
+    sum += card;
+    // Push the card to the cards array
+    cards.push(card);
+    console.log(cards);
+    renderGame();
+  };
