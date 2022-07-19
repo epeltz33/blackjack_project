@@ -19,9 +19,13 @@ let cards = [firstCard, secondCard];
 let isAlive = true;
 
 function getRandomCard() {
-  let card = Math.floor(Math.random() * (11 - 1 + 1)) + 1; // random number between 1 and 11
-
-  return card;
+  let randomNumber = Math.floor(Math.random() * 13) + 1; // random number between 1 and 13 (made a mistake here)
+  if (randomNumber > 10) {
+    return 10;
+  }
+  if (randomNumber === 1) {
+    return 11;
+  }
 }
 
 let startGame = () => {
@@ -30,25 +34,31 @@ let startGame = () => {
 
 let renderGame = () => {
   cardsEl.textContent = "Cards:  ";
+
   for (let i = 0; i < cards.length; i++) {
     cardsEl.textContent += cards[i] + " ";
   }
   totalEl.textContent = `Total: ${sum} `;
+
   if (sum <= 20) {
     message = "Do you want to hit?";
   } else if (sum === 21) {
     message = "You got Blackjack!";
+
     haveBlackJack = true;
   } else {
     message = "You busted!";
+
     isAlive = false;
   }
   messageEl.textContent = message;
 };
 
-const newCard = () => {
+function newCard() {
   console.log(`Drawing a new card from the deck`);
+
   let card = getRandomCard();
+
   sum += card;
   // Push the card to the cards array
   cards.push(card);
@@ -56,4 +66,4 @@ const newCard = () => {
   console.log(cards);
 
   renderGame();
-};
+}
