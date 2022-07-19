@@ -34,4 +34,5 @@
 
 const newCard = () => {
   console.log(`Drawing a new card from the deck`);
+   let card;
 };
