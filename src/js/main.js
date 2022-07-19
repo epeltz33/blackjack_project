@@ -1,30 +1,37 @@
    
-  let firstCard = 9;
-  
-   let secondCard = 11
-   
-   let sum = secondCard + firstCard; 
-   
-   let haveBlackJack = false
-   
-   let message = "";
+  let firstCard = 12;
 
-   let messageEl = document.getElementById("message-el");
-//  make a variable called isAlive and assign it to true 
-   let isAlive = true
-// flip its value to false in the appropriate code block 
-const startGame = () => {
-  if (sum <= 20) {
-    message = "Do you want to hit?";
-  } else if (sum === 21) {
-    message = "You got Blackjack!";
-    haveBlackJack = true;
-  } else {
-    message = "You busted!";
-    isAlive = false;
-  }
-  console.log(message);
-};
+  let secondCard = 11;
+
+  let sum = secondCard + firstCard;
+
+  let haveBlackJack = false;
+
+  let message = "";
+
+  let messageEl = document.getElementById("message-el");
+
+  let totalEl = document.querySelector("#total-el");
+
+  let cardsEl = document.querySelector("#cards-el");
+
+  let isAlive = true;
+
+  const startGame = () => {
+    cardsEl.textContent = `Cards: ${firstCard}  ${secondCard} `;
+    totalEl.textContent = `Total: ${sum} `;
+    if (sum <= 20) {
+      message = "Do you want to hit?";
+    } else if (sum === 21) {
+      message = "You got Blackjack!";
+      haveBlackJack = true;
+    } else {
+      message = "You busted!";
+      isAlive = false;
+    }
+    messageEl.textContent = message;
+  };
+
     
 
 
