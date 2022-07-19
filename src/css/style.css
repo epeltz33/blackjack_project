@@ -12,3 +12,9 @@ body {
  h1 {
   color: gold;
  }
+ 
+ #Start-btn {
+  color: #016f32 ; 
+  width: 150px;
+  background: gold;
+ }
