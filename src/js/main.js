@@ -12,6 +12,15 @@ let cardsEl = document.querySelector("#cards-el");
 
 let cards = [];
 
+let player = {
+  playerName: "Per",
+  playerChips: 145,
+};
+
+let playerEl = document.getElementById("player-el");
+playerEl.textContent = `Player: ${player.playerName} Chips: ${player.playerChips}`;
+console.log(playerEl);
+
 let isAlive = false;
 console.log(cards);
 function getRandomCard() {
