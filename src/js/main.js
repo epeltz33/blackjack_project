@@ -1,27 +1,21 @@
-let haveBlackJack = false;
-
-let sum = 0;
-
-let message = "";
-
-let messageEl = document.getElementById("message-el");
-
-let totalEl = document.querySelector("#total-el");
-
-let cardsEl = document.querySelector("#cards-el");
-
-let cards = [];
-
 let player = {
   playerName: "Per",
   playerChips: 145,
 };
-
+//
+let isAlive = false;
+let haveBlackJack = false;
+let sum = 0;
+let message = "";
+let cards = [];
+// DOM elements
+let messageEl = document.getElementById("message-el");
+let totalEl = document.querySelector("#total-el");
+let cardsEl = document.querySelector("#cards-el");
 let playerEl = document.getElementById("player-el");
 playerEl.textContent = `Player: ${player.playerName} Chips: ${player.playerChips}`;
 console.log(playerEl);
 
-let isAlive = false;
 console.log(cards);
 function getRandomCard() {
   let randomNumber = Math.floor(Math.random() * 13) + 1; // random number between 1 and 13 (made a mistake here)
@@ -77,4 +71,3 @@ function newCard() {
     renderGame();
   }
 }
-       
