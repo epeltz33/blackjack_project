@@ -5,19 +5,55 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="src/css/style.css">
+	<link rel="stylesheet" href="node_modules/deck-of-cards/example/example.css">
 	 <title>Blackjack Project </title>
  </head>
  <body> 
-	
+	<div class="container">
 	<h1>Welcome to Blackjack!</h1>
-	<p id="message-el">Do you want to try your luck ?</p>
-	<p id="cards-el">Cards:</p>
-	<p id="total-el">Total:</p>
-	
-	<button onclick="startGame()" type="button">START GAME</button>
-	
-	<button onclick="newCard()"   type="button">NEW CARD</button>
-	<p id="player-el"></p>
+	<h2><span id="game-result"></span> Try Your Luck !</h2>
+	<div class="header-row">
+	  <table>
+	  <tr>
+		  <th id="win-header">Wins</th>
+		  <th id="loss-header">Losses</th>
+		  <th id="draw-header">Push</th>
+		  </tr>
+		  
+		<td>
+		<span id="wins">0</span>
+		<span id="losses">0</span>
+		<span id="pushes">0</span>
+		</td>  
+	  </table>
+	</div>
+	 <div class="second-row">
+	  <div id="player-container">
+	    <h2>You: <span id="player-result"> 0</span></h2>
+	</div>
+	<div id="dealer-container">
+	    <h2>Dealer: <span id="dealer-result"> 0</span></h2>
+	    </div>
+	<div class="third-row">
+	  <div>
+	    <button class="primary-lg-button" id="hit-button">
+	      Hit
+	    </button>
+	    <button class="stand-lg-button" id="stand-button">
+	      Stand
+	    </button>
+	    <button class="deal-lg-button" id="deal-button">
+	      Deal
+	    </button>
+	    <button class="restart-lg-button" id="reset-button">
+	      Restart
+	    </button>
+	  </div>
+	</div>
+	</div>
+	</div>
 	 </body>
   <script type="text/javascript" src="src/js/main.js"></script>
+  <script src="node_modules/deck-of-cards/dist/deck.min.js"></script>
+  
  </html>
