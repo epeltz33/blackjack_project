@@ -25,3 +25,18 @@ documentqueryselector("#bet-button").addeventlistener("click", bet);
 documentqueryselector("#reset-button").addeventlistener("click", reset);
 documentqueryselector("#clear-button").addeventlistener("click", clear);
 documentqueryselector("#deal-button").addeventlistener("click", deal);
+
+// element references for displaying bet amount and cash amount and split bet amount
+
+function cashELement () {
+	document.getElementById( "chips-left" ).innerText = `Chips: ${ cash }`;
+}
+function betElement () {
+	document.getElementById( "enteredBet" ).innerText = `Bet amount: ${ playerBet }`;
+}
+function splitBetElement () {
+	document.getElementById( "split-bet" ).innerText = `Bet amount: ${ split-bet }`;
+}
+
+// functions 
+
