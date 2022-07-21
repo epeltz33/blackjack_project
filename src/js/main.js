@@ -280,5 +280,71 @@ function playerCardTake () {
 	    function Score() { 
 	     let count = ( currentCards === "splitHand" ) ? splitCount : playerCount;
 	     
-	     if 
-	    }
+	     //if 
+	    if ( count > 21) {
+	     			return "Bust";
+		} if ( currentCards === "splitHand") {
+			$( "blockqoute" ).append( `<p class"mb-0 message">Your Split Hand Busted!! You lose $${ playerBet }.</p>` );
+			currentCards = "playerHand"; // set the currentCards to playerHand
+			 updateCount(); // update the count
+			  $( "#double-button" ).show(); // show the double button
+			  
+		} else if (splitCards.length < 1) {
+		 	$("blockqoute").append(`<p class"mb-0 message">You Busted!! You lose $${playerBet}.</p>`);
+		 	loseBet(); // lose the bet
+			dealTheHand();
+		} else {
+		  $("blockqoute").append(`<p class"mb-0 message">You Busted!! You lose $${playerBet}.</p>`);
+		  currentCards = "splitHand"; 
+		  dealTheHand();
+		  scoreGame();
+		 }	
+		return;
+		} 
+	
+		
+	   // lose the bet function
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   // function to win the bet
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   // function that shows a draw
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   // function that shows blackjack!
+	   
+	   
+	   
+	   
+	   
+	   // function that allows the player to play again
+	   
+	   
+	   
+	   
+	   // reset the game function
+	   
+	   
+	   
