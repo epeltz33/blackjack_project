@@ -4,14 +4,9 @@ body {
  text-align: center;
  color:rgb(0, 255, 255);
 }
-
-#message-el {
-  font-style: italic
- }
  
- h1 {
-  color: gold;
- }
+ 
+
  
 button {
   color: #016f32 ; 
