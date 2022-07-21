@@ -304,6 +304,22 @@ function playerCardTake () {
 	
 		
 	   // lose the bet function
+	    function loseBet() {
+	     let bet = ( currentCards === "splitHand" ) ? splitBet : playerBet; // get the bet from the currentCards 
+	     cash -= bet; // subtract the bet from the cash
+			cashELement(); // update the cash
+			
+			if (currentCards === "splitHand") {
+				currentCards = "playerHand";
+				scoreGame(); 
+			} else if (cash === 0) {
+				$("blockqoute").append(`<p class"mb-0 message">You are out of cash!</p>`);
+				$("#hit-button, #stand-button, #double-button, #split-button").hide();
+				$( ".game-button, #reset-button" ).toggle();
+			} else {
+				$( ".game-button, #play-again-button" ).toggle();
+			}
+	    }
 	   
 	   
 	   
@@ -317,34 +333,63 @@ function playerCardTake () {
 	   
 	   // function to win the bet
 	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   // function that shows a draw
-	   
-	   
-	   
+	    function win() {
+	     let bet = ( currentCards === "splitHand" ) ? splitBet : playerBet; // get the bet from the currentCards
+	     cash += parseInt(bet); // add the bet to the cash (parseInt to convert string to integer)
+	     cashELement(); // update the cash
+	     if (currentCards === "splitHand") { // if the currentCards is splitHand
+			currentCards = "playerHand"; // set the currentCards to playerHand
+			scoreGame();  // score the game
+		} else {
+			$( ".game-button, #play-again-button" ).toggle(); // show the play again button
+		}
+	    }
 	   
 	   
 	   
 	   
 	   // function that shows blackjack!
 	   
+function blackjack () {
+	let bet = ( currentCards === "splitHand" ) ? splitBet : playerBet; // get the bet from the currentCards
+	cash += parseInt( bet ) * 2; // add the bet to the cash (parseInt to convert string to integer) and multiply by 2 to get the winnings
+	cashELement(); // update the cash 
+	if ( currentCards === "splitHand" ) { // if the currentCards is splitHand
+		$( ".blockqoute" ).append( `<p class"mb-0 message">You got a blackjack with your split hand! You win $${ playerBet }!</p>` );
+		currentCards = "playerHand"; // set the currentCards to playerHand
+	} else {
+		$( ".blockqoute" ).append( `<p class"mb-0 message">You got a blackjack! You win $${ playerBet }!</p>` );
+	}
+	$( ".game-button, #play-again-button, #double-button" ).toggle(); // show the play again button
 	   
 	   
 	   
 	   
-	   // function that allows the player to play again
+	   
+	   
+	   
+	// function that shows a draw
+	   
+	function draw () {
+		if ( currentCards === "splitHand" ) { // if the currentCards is splitHand
+			currentCards = "playerHand"; // set the currentCards to playerHand
+			scoreGame(); // score the game
+		} else {
+			$( ".game-button, #play-again-button" ).toggle(); // show the play again button
+		}
+	}
 	   
 	   
 	   
 	   
-	   // reset the game function
+	// function that allows the player to play again
 	   
 	   
 	   
+	   
+	// reset the game function
+	   
+	   
+	   
+	   
+}
