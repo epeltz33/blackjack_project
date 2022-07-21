@@ -13,21 +13,6 @@ let splitBet = 0;
 let currentCards = "";
 
 cashELement();
-
-// event listeners for buttons
-
-document.querySelector("#hit-button").addeventlistener("click", takeCard); // event listener for the hit button
-document.querySelector("#stand-button").addeventlistener("click", dealerPlay);
-document.querySelector("#double-button").addeventlistener("click", doubleDown);
-document
-  .querySelector("#play-again-button")
-  .addeventlistener("click", playAgain);
-document.querySelector("#split-button").addeventlistener("click", split);
-document.querySelector("#bet-button").addeventlistener("click", bet);
-document.querySelector("#reset-button").addeventlistener("click", reset);
-document.querySelector("#clear-button").addeventlistener("click", clear);
-document.querySelector("#deal-button").addeventlistener("click", deal);
-
 // element references for displaying bet amount and cash amount and split bet amount
 
 function cashELement () {
@@ -39,6 +24,20 @@ function betElement () {
 function splitBetElement () {
 	document.getElementById( "split-bet" ).innerText = `Bet amount: ${ split-bet }`;
 }
+
+
+// event listeners for buttons
+
+document.querySelector("#hit-button").addeventlistener("click", takeCard); 
+document.querySelector("#stand-button").addeventlistener("click", stand); // dealerPla
+document.querySelector("#double-button").addeventlistener("click", doubleTheBet);
+document.querySelector("#play-again-button").addeventlistener("click", playAgain);
+document.querySelector("#split-button").addeventlistener("click", split);
+document.querySelector("#bet-button").addeventlistener("click", bet);
+document.querySelector("#reset-button").addeventlistener("click", reset);
+document.querySelector("#clear-button").addeventlistener("click", clear);
+document.querySelector("#deal-button").addeventlistener("click", deal);
+
 
 // functions 
 
@@ -173,7 +172,7 @@ function splitTheHand() {
   $("#split-button").toggle(); // toggle the split button
   splitBet = playerBet; // set the splitBet to the playerBet
   splitBetElement(); // display the splitBetElement
-  playerCardTake(); // take the player's cards
+  takeCard(); // take the player's cards
   if (playerCount === 21 && dealerCount < 21) {
     playerBlackjack();
   }
@@ -240,9 +239,10 @@ function sortAces(hand) {
   return aces.concat(nonAces);
 }
 
-function playerCardTake() {
-  let cards = currentCards === "splitHand" ? splitTakeCard() : playerTakeCard();
+function takeCard() {
+	var cards = (currentCards === "splitHand") ? splitTakeCard() : playerTakeCard();
 }
+
 
 // player take card function
 function playerTakeCard() {
