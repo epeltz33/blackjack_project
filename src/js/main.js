@@ -1,7 +1,7 @@
 // blackjack game global variables
 
 let deck = [];
-let cash = 100;
+let money = 100;
 let playerCards = [];
 let splitCards = [];
 let dealerCards = [];
@@ -12,36 +12,35 @@ let playerBet = 0;
 let splitBet = 0;
 let currentCards = "";
 
-cashELement();
+moneyELement();
 // element references for displaying bet amount and cash amount and split bet amount
 
-function cashELement () {
-	document.getElementById( "chips-left" ).innerText = `Chips: ${ cash }`;
+function moneyELement () {
+	document.getElementById( "chips-left" ).innerText = `Chips: ${ money}`;
 }
 function betElement () {
-	document.getElementById( "enteredBet" ).innerText = `Bet amount: ${ playerBet }`;
+	document.getElementById( "submittedBet" ).innerText = `Bet amount: ${ playerBet }`;
 }
 function splitBetElement () {
-	document.getElementById( "split-bet" ).innerText = `Bet amount: ${ split-bet }`;
+	document.getElementById( "splitBet" ).innerText = `Bet amount: ${ splitBet }`;
 }
 
 
-// event listeners for buttons
-
-document.querySelector("#hit-button").addeventlistener("click", takeCard); 
-document.querySelector("#stand-button").addeventlistener("click", stand); // dealerPla
-document.querySelector("#double-button").addeventlistener("click", doubleTheBet);
-document.querySelector("#play-again-button").addeventlistener("click", playAgain);
-document.querySelector("#split-button").addeventlistener("click", split);
-document.querySelector("#bet-button").addeventlistener("click", bet);
-document.querySelector("#reset-button").addeventlistener("click", reset);
-document.querySelector("#clear-button").addeventlistener("click", clear);
-document.querySelector("#deal-button").addeventlistener("click", deal);
+// event listeners for buttons 
+document.querySelector("#dealButton").addEventListener("click", dealHand);
+document.querySelector("#betButton").addEventListener("click", makeBet);
+document.querySelector("#clearButton").addEventListener("click", clearBet);
+//document.querySelector("#doubleButton").addEventListener("click", doubleBet);
+document.querySelector("#hitButton").addEventListener("click", takeCard);
+document.querySelector("#playAgain").addEventListener("click", playAgain);
+document.querySelector("#standButton").addEventListener("click", stand);
+document.querySelector("#splitButton").addEventListener("click", split);
+document.querySelector("#resetButton").addEventListener("click", resetGame);
 
 
 // functions 
 
-function initial() {
+function init() {
   deck = [];
   playerCards = [];
   splitCards = [];
@@ -52,9 +51,9 @@ function initial() {
   playerBet = 0;
   splitBet = 0;
   currentCards = "playerHand";
-  cashELement();
+    document.getElementById("splitBet").innerHTML = ""; // clear the split bet amount
+  moneyELement(); 
   betElement();
-  document.getElementById("split-bet").innerHTML = "";
   $(".playingCards, .message").hide();
   resetDeck();
 }
@@ -66,14 +65,14 @@ function resetDeck() {
   for (let i = 0; i < cardSuits.length; i++) {
     let cardValues = [
       "A",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
       "10",
       "J",
       "Q",
@@ -86,345 +85,427 @@ function resetDeck() {
 }
 // shuffle the deck function
 function shuffleDeck() {
-  for (let i = 0; i < deck.length; i++) {
-    let randomIndex = Math.floor(Math.random() * deck.length);
-    let temp = deck[i];
-    deck[i] = deck[randomIndex];
-    deck[randomIndex] = temp;
-  }
+let count = deck.length;
+   while (count) {
+    deck.push(deck.splice(Math.floor(Math.random() * count), 1) [0]);// shuffle the deck function in deck array and push it to the end of the array
+     count -= 1; // remove the last element from the deck array
+   }
 }
 
 // make a bet function
 function makeBet() {
-  playerBet = document.getElementById("bet-amount").value;
+  playerBet = document.getElementById("betInput").value;
   if (playerBet <= cash && playerBet > 0) {
     betElement();
-    $("#deal-button, #clear-button, .form-inline").toggle();
+    $("#dealButton, #clearButton, .form-inline").toggle();
   } else {
     alert("Please enter a valid bet amount");
   }
 }
 
 // clear the bet function
-function clearBet() {
-  betElement();
-  playerBet = 0;
-  document.getElementById("bet-amount").value = "Enter bet amount: ";
-  document.getElementById("submittedBet").innerHTML = "";
-  cashELement();
-  $("#deal-button, #clear-button, .form-inline").toggle();
+function makeBet() {
+  playerBet = document.querySelector("#betAmount").value;
+  if (playerBet <= money && playerBet > 0) {
+    betElement();
+    $("#clearButton, #dealButton, .form-inline").toggle();
+  } else {
+    console.log("error");
+  }
 }
 
-// deal the cards function
+function clearBet() {
+  playerBet = 0;
+  betElement();
+  document.querySelector("#betAmount").value = "Enter Bet Amount";
+  document.getElementById("submittedBet").innerHTML = "";
+  moneyELement();
+  $("#clearButton, #dealButton, .form-inline").toggle();
+}
 
-function dealTheHand() {
+function dealHand() {
   shuffleDeck();
-  let hitCard = [];
+
+  let nextCard = [];
   for (i = 0; i < 2; i++) {
-    hitCard = deck.pop();
-    playerCards.push(hitCard);
+    nextCard = deck.pop();
+    playerCards.push(nextCard);
   }
 
   for (i = 0; i < 2; i++) {
-    hitCard = deck.pop();
-    dealerCards.push(hitCard);
+    nextCard = deck.pop();
+    dealerCards.push(nextCard);
   }
-  // display the cards for the player
+
   $(".playerCards").append(
     `<div class="playing-card ${playerCards[0]}"></div>`
-  ); // player's first card  playerCards[0]
+  );
   $(".playerCards").append(
     `<div class="playing-card ${playerCards[1]}"></div>`
-  ); // player's second card  playerCards[1]
-  // display the cards for the dealer
+  );
+
   $(".dealerCards").append(
     `<div class="playing-card ${dealerCards[0]}"></div>`
-  ); // dealer's first card  dealerCards[0]
+  );
   $(".dealerCards").append(
     `<div class="playing-card back-blue" id="face-down-card"></div>`
-  ); // dealer's second card
+  );
 
-  $("#clear-button, #deal-button, .game-button, #double-button").toggle();
-  updateCount();
+  $("#clearButton, #dealButton, .game-button, #doubleButton").toggle();
+  updateCounts();
 
   if (playerCount === 21 && dealerCount < 21) {
-    playerBlackjack();
+    blackjack();
   }
   toggleSplit();
-} // end of dealTheHand function
+}
 
-// toggle the split button function
-function toggleSplit() {
-  const firstCard = playerCards[0];
-  const secondCard = playerCards[1];
-  if (firstCard[firstCard.length - 1] === secondCard[secondCard.length - 1]) {
-    $("#split-button").toggle();
+function doubleBet() {
+  var bet = currentCards === "splitHand" ? splitBet : playerBet;
+  if (bet * 2 <= money) {
+    if (currentCards === "playerHand") {
+      playerBet *= 2;
+      betElement();
+      takeCard();
+      if (splitCards.length > 1) {
+        currentCards = "splitHand";
+        if (playerCount < 21) {
+          dealerHand();
+          scoreGame();
+        }
+      } else if (playerCount <= 21) {
+        dealerHand();
+        scoreGame();
+      } else {
+        return;
+      }
+    } else {
+      splitBet *= 2;
+      splitBetElement();
+      takeCard();
+      $("#doubleButton").show();
+      currentCards = "playerHand";
+    }
+  } else {
+    console.log("You do not have enough money to double down!");
   }
 }
 
-// split the cards function
-function splitTheHand() {
-  const secondCard = playerCards[1]; // second card of the player playerCards[1]
-  $(`.playing-card.${playerCards[1]}`).remove(); // remove the second card of the player
-  splitCards = [secondCard]; // add the second card to the splitCards array
-  playersCards = playersCards.slice(0, 1); // remove the second card from the playersCards array
-  $(".splitCards").append(`<div class="playing-card ${secondCard}"></div>`); // display the second card of the player
-  $("#split-button").toggle(); // toggle the split button
-  splitBet = playerBet; // set the splitBet to the playerBet
-  splitBetElement(); // display the splitBetElement
-  takeCard(); // take the player's cards
+function toggleSplit() {
+  const secondCard = playerCards[1];
+  const firstCard = playerCards[0];
+  if (firstCard[firstCard.length - 1] === secondCard[secondCard.length - 1]) {
+    $("#splitButton").toggle();
+  }
+}
+
+function split() {
+  const secondCard = playerCards[1];
+  $(`.playing-card.${playerCards[1]}`).remove();
+  splitCards = [secondCard];
+  playersCards = playerCards.splice(0, 1);
+  $(".splitCards").append(`<div class="playing-card ${secondCard}"></div>`);
+  $("#splitButton").toggle();
+  splitBet = playerBet;
+  splitBetElement();
+  playerTakeCard();
   if (playerCount === 21 && dealerCount < 21) {
-    playerBlackjack();
+    blackjack();
   }
   console.log(playerCount);
   splitTakeCard();
   if (splitCount === 21 && dealerCount < 21) {
     blackjack();
   }
-  updateCount();
+  updateCounts();
   currentCards = "splitHand";
 }
-// double the bet function
-function doubleTheBet() {
-  playerBet = playerBet * 2;
-  betElement();
-  cashELement();
-  $("#deal-button, #clear-button, .form-inline").toggle();
-  dealTheHand();
+
+function updateCounts() {
+  playerCount = getHandValue("player");
+  dealerCount = getHandValue("dealer");
+  splitCount = getHandValue("split");
+
+  console.log(`player count ${playerCount}`);
+  console.log(`dealer count ${dealerCount}`);
+  console.log(`split count ${splitCount}`);
+
+  playerBust();
 }
 
-// get the value of the hand function
 function getHandValue(playerType) {
-  let hand = handOf(playerType); // get the hand of the player
-  let count = 0; // set the count to 0
+  let hand = handOf(playerType);
+  let count = 0;
   if (hand.length > 2) {
-    // if the hand is greater than 2
-    for (let i = 0; i < hand.length; i++) {
-      // for each card in the hand
-      let card = hand[i]; // set the card to the current card
-      let cardValue = card[0]; // set the cardValue to the first character of the card
-      count =
-        cardValue === "A" && count < 11
-          ? 11
-          : cardValue === "A" && count > 11
-          ? 1
-          : cardValue === "J" || cardValue === "Q" || cardValue === "K"
-          ? 10
-          : parseInt(cardValue);
-    }
+    sortAces(hand);
   }
-  return count; // return the count
+
+  hand.forEach(function (card) {
+    if (card.split("").includes("A") && count < 11) {
+      count += 11;
+    } else if (card.split("").includes("A") && count > 11) {
+      count += 1;
+    } else if (card.split("").includes("2")) {
+      count += 2;
+    } else if (card.split("").includes("3")) {
+      count += 3;
+    } else if (card.split("").includes("4")) {
+      count += 4;
+    } else if (card.split("").includes("5")) {
+      count += 5;
+    } else if (card.split("").includes("6")) {
+      count += 6;
+    } else if (card.split("").includes("7")) {
+      count += 7;
+    } else if (card.split("").includes("8")) {
+      count += 8;
+    } else if (card.split("").includes("9")) {
+      count += 9;
+    } else if (card.split("").includes("1")) {
+      count += 10;
+    } else if (card.split("").includes("J")) {
+      count += 10;
+    } else if (card.split("").includes("Q")) {
+      count += 10;
+    } else if (card.split("").includes("K")) {
+      count += 10;
+    }
+  });
+  return count;
 }
+
 function handOf(playerType) {
-  if (playerType === "player") {
-    return playerCards;
-  } else if (playerType === "dealer") {
+  if (playerType === "dealer") {
     return dealerCards;
-  } else if (playerType === "splitHand") {
+  } else if (playerType === "player") {
+    return playerCards;
+  } else if (playerType === "split") {
     return splitCards;
   }
 }
 
-// function to sort Aces
 function sortAces(hand) {
-  let aces = [];
-  let nonAces = [];
-  for (let i = 0; i < hand.length; i++) {
-    if (hand[i][0] === "A") {
-      aces.push(hand[i]);
-    } else {
-      nonAces.push(hand[i]);
+  for (i = 0; i < hand.length; i++) {
+    if (hand[i].charAt(hand[i].length - 1) === "A") {
+      hand.push(hand.splice(i, 1)[0]);
     }
   }
-  return aces.concat(nonAces);
 }
 
 function takeCard() {
-	var cards = (currentCards === "splitHand") ? splitTakeCard() : playerTakeCard();
+  var cards = currentCards === "splitHand" ? splitTakeCard() : playerTakeCard();
 }
 
-
-// player take card function
 function playerTakeCard() {
-  let hitCard = deck.pop();
-  playerCards.push(hitCard);
+  nextCard = deck.pop();
+  playerCards.push(nextCard);
   $(".playerCards").append(
-    `<div class="playing-card ${playersCards[playerCards.length - 1]}"></div>`
+    `<div class="playing-card ${playerCards[playerCards.length - 1]}"></div>`
   );
-
   if (playerCards.length > 2) {
-    $("#double-button, #split-button").hide();
+    $("#doubleButton, #splitButton").hide();
   }
-  updateCount();
+  updateCounts();
 }
-// split take card function
+
 function splitTakeCard() {
-  let hitCard = deck.pop();
-  splitCards.push(hitCard);
+  nextCard = deck.pop();
+  splitCards.push(nextCard);
   $(".splitCards").append(
     `<div class="playing-card ${splitCards[splitCards.length - 1]}"></div>`
   );
   if (splitCards.length > 2) {
-    $("#double-button, #split-button").hide();
+    $("#doubleButton, #splitButton").hide();
   }
-  updateCount();
+  updateCounts();
 }
 
-// stand function
 function stand() {
   if (splitCards.length < 1) {
-    dealTheHand();
+    dealerHand();
     scoreGame();
-    $("#double-button, #split-button").hide();
+    $("#doubleButton, #splitButton").hide();
   } else if (currentCards === "splitHand") {
     currentCards = "playerHand";
-    $("#double-button").show();
+    $("#doubleButton").show();
     toggleSplit();
   } else {
     currentCards = "splitHand";
-    dealTheHand();
+    dealerHand();
     scoreGame();
-    $("#double-button, #split-button").hide();
+    $("#doubleButton, #splitButton").hide();
   }
 }
+
 function dealerHand() {
-  // shows the face down card and the face up card of the dealer
+  // reveals face down card
   document.getElementById(
     "face-down-card"
   ).className = `playing-card ${dealerCards[1]}`;
-  // dealer takes cards until the dealer count is greater than 17
+  // dealer takes card if count lower than 17
   if (dealerCount < 17) {
     dealerTakeCard();
-    dealerHand();
   }
 }
-
-// function to take a card for the dealer
 
 function dealerTakeCard() {
-  hitCard = deck.pop(); // get the hitCard from the deck
-  dealerCards.push(hitCard); // add the hitCard to the dealerCards array
+  nextCard = deck.pop();
+  dealerCards.push(nextCard);
   $(".dealerCards").append(
     `<div class="playing-card ${dealerCards[dealerCards.length - 1]}"></div>`
-  ); // display the hitCard
-  dealerCount = getHandValue("dealer"); // get the value of the dealer's hand
-  console.log(`Dealer count: ${dealerCount}`); // display the dealerCount
+  );
+  dealerCount = getHandValue("dealer");
+  console.log(`dealer count ${dealerCount}`);
   if (dealerCount < 17) {
-    // if the dealer count is less than 17
-    dealerTakeCard(); // take a card
+    dealerTakeCard();
   }
 }
 
-// function to score the game
-function Score() {
-  let count = currentCards === "splitHand" ? splitCount : playerCount;
+function scoreGame() {
+  var count = currentCards === "splitHand" ? splitCount : playerCount;
 
-  //if
-  if (count > 21) {
-    return "Bust";
-  }
-  if (currentCards === "splitHand") {
-    $("blockqoute").append(
-      `<p class"mb-0 message">Your Split Hand Busted!! You lose $${playerBet}.</p>`
+  if (dealerCount > 21 && count < 22) {
+    $("blockquote").append(
+      `<p class="mb-0 message">Dealer Busts! You win $${playerBet}.</p>`
     );
-    currentCards = "playerHand"; // set the currentCards to playerHand
-    updateCount(); // update the count
-    $("#double-button").show(); // show the double button
-  } else if (splitCards.length < 1) {
-    $("blockqoute").append(
-      `<p class"mb-0 message">You Busted!! You lose $${playerBet}.</p>`
-    );
-    loseBet(); // lose the bet
-    dealTheHand();
+    winBet();
+  } else if (dealerCount > 16 && count < 22 && dealerCount < count) {
+    if (currentCards === "splitHand") {
+      $("blockquote").append(
+        `<p class="mb-0 message">Your split hand beat the dealer! You win $${playerBet}.</p>`
+      );
+    } else {
+      $("blockquote").append(
+        `<p class="mb-0 message">You beat the dealer! You win $${playerBet}.</p>`
+      );
+    }
+    winBet();
+  } else if (dealerCount > 16 && count < 22 && dealerCount > count) {
+    if (currentCards === "splitHand") {
+      $("blockquote").append(
+        `<p class="mb-0 message">Your split hand lost to the dealer! You lose $${playerBet}.</p>`
+      );
+    } else {
+      $("blockquote").append(
+        `<p class="mb-0 message">You lost to the dealer! You lose $${playerBet}.</p>`
+      );
+    }
+    loseBet();
+  } else if (dealerCount === count) {
+    if (currentCards === "splitHand") {
+      $("blockquote").append(
+        `<p class="mb-0 message">It's a draw on your split hand. Take your money back.</p>`
+      );
+    } else {
+      $("blockquote").append(
+        `<p class="mb-0 message">It's a draw on your hand. Take your money back.</p>`
+      );
+    }
+    draw();
+  } else if (count > 21) {
+    loseBet();
   } else {
-    $("blockqoute").append(
-      `<p class"mb-0 message">You Busted!! You lose $${playerBet}.</p>`
-    );
-    currentCards = "splitHand";
-    dealTheHand();
-    scoreGame();
+    $(".game-button").toggle();
   }
-  return;
 }
 
-// lose the bet function
+function playerBust() {
+  var count = currentCards=== "splitHand" ? splitCount : playerCount;
+  if (count > 21) {
+    if (currentCards=== "splitHand") {
+      $("blockquote").append(
+        `<p class="mb-0 message">Your Split Hand Busted! You lose $${playerBet}.</p>`
+      );
+      currentCards = "playerHand";
+      updateCounts();
+      $("#doubleButton").show();
+    } else if (splitCards.length < 1) {
+      $("blockquote").append(
+        `<p class="mb-0 message">You Busted! You lose $${playerBet}.</p>`
+      );
+      loseBet();
+      dealerHand();
+    } else {
+      $("blockquote").append(
+        `<p class="mb-0 message">You Busted! You lose $${playerBet}.</p>`
+      );
+      currentCards = "splitHand";
+      dealerHand();
+      scoreGame();
+    }
+  } else {
+    return;
+  }
+}
+
 function loseBet() {
-  let bet = currentCards === "splitHand" ? splitBet : playerBet; // get the bet from the currentCards
-  cash -= bet; // subtract the bet from the cash
-  cashELement(); // update the cash
+  var bet = currentCards === "splitHand" ? splitBet : playerBet;
+  money -= bet;
+  moneyELement();
 
   if (currentCards === "splitHand") {
     currentCards = "playerHand";
     scoreGame();
-  } else if (cash === 0) {
-    $("blockqoute").append(`<p class"mb-0 message">You are out of cash!</p>`);
-    $("#hit-button, #stand-button, #double-button, #split-button").hide();
-    $(".game-button, #reset-button").toggle();
+  } else if (money === 0) {
+    $("blockquote").append(
+      `<p class="mb-0 message">You're out of money! Click Reset Game to play again!</p>`
+    );
+    $(".game-button, #resetButton").toggle();
   } else {
-    $(".game-button, #play-again-button").toggle();
+    $(".game-button, #playAgain").toggle();
   }
 }
 
-// function to win the bet
+function winBet() {
+  var bet = currentCards === "splitHand" ? splitBet : playerBet;
+  money += parseInt(bet);
+  moneyELement();
+  if (currentCards=== "splitHand") {
+    currentCards = "playerHand";
+    scoreGame();
+  } else {
+    $(".game-button, #playAgain").toggle();
+  }
+}
 
-function win() {
-  let bet = currentCards === "splitHand" ? splitBet : playerBet; // get the bet from the currentCards
-  cash += parseInt(bet); // add the bet to the cash (parseInt to convert string to integer)
-  cashELement(); // update the cash
+function draw() {
   if (currentCards === "splitHand") {
-    // if the currentCards is splitHand
-    currentCards = "playerHand"; // set the currentCards to playerHand
-    scoreGame(); // score the game
+    currentCards = "playerHand";
+    scoreGame();
   } else {
-    $(".game-button, #play-again-button").toggle(); // show the play again button
+    $(".game-button, #playAgain").toggle();
   }
 }
-
-// function that shows blackjack!
 
 function blackjack() {
-  let bet = currentCards === "splitHand" ? splitBet : playerBet; // get the bet from the currentCards
-  cash += parseInt(bet) * 2; // add the bet to the cash (parseInt to convert string to integer) and multiply by 2 to get the winnings
-  cashELement(); // update the cash
+  let bet = currentCards === "splitHand" ? splitBet : playerBet;
+  money += parseInt(bet) * 1.5;
+  moneyElement();
   if (currentCards === "splitHand") {
-    // if the currentCards is splitHand
-    $(".blockqoute").append(
-      `<p class"mb-0 message">You got a blackjack with your split hand! You win $${playerBet}!</p>`
+    $("blockquote").append(
+      `<p class="mb-0 message">Your Split Hand Got Blackjack!! You win $${
+        playerBet * 3
+      }.</p>`
     );
-    currentCards = "playerHand"; // set the currentCards to playerHand
+    currentCards = "playerHand";
   } else {
-    $(".blockqoute").append(
-      `<p class"mb-0 message">You got a blackjack! You win $${playerBet}!</p>`
+    $("blockquote").append(
+      `<p class="mb-0 message">Blackjack!! You win $${playerBet * 1.5}.</p>`
     );
   }
-  $(".game-button, #play-again-button, #double-button").toggle(); // show the play again button
-
-  // function that shows a draw
-
-  function draw() {
-    if (currentCards === "splitHand") {
-      // if the currentCards is splitHand
-      currentCards = "playerHand"; // set the currentCards to playerHand
-      scoreGame(); // score the game
-    } else {
-      $(".game-button, #play-again-button").toggle(); // show the play again button
-    }
-  }
-
-  // function that allows the player to play again
-
-  function playAgain() {
-    $(".form-inline, #play-again-button").toggle(); // show the form-inline and play again button
-    initial(); // reset the game
-
-    // reset the game function
-
-    function reset() {
-      $(".form-inline, #reset-button").toggle(); // show the form-inline and reset button
-      $(".game-button, #play-again-button, #double-button").hide(); //  hide the play again button, double button, and hit button
-      cash = 100; // set the cash to 100
-      initial(); // reset the game
-    }
-  }
+  $(".game-button, #doubleButton, #playAgain").toggle();
 }
-initial(); // initialize the game
+
+function playAgain() {
+  $(".form-inline, #playAgain").toggle();
+  init();
+}
+
+function resetGame() {
+  $(".form-inline, #resetButton").toggle();
+  $(".game-button, #playAgain").hide();
+  money = 100;
+  init();
+}
+
+init();

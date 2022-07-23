@@ -5,17 +5,17 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" >
 	<link rel="stylesheet" href="src/css/style.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" ></script> 
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" ></script>
     <script defer src="./src/js/main.js"></script>
     <title>Blackjack Project</title>
  </head>
 <body>
     <div class="container">
-     <h1 class="display-text-center">Blackjack</h1>
+     <h1 class="display-4 text-center">Blackjack</h1>
      <h3 class="text-center">Welcome to Blackjack!</h3>
 	</div>	
 	<main class="container">
@@ -24,7 +24,7 @@
 			<div class="card">
 			 <div class="card-body">
 			  <h3 class="text-center"></h3>
-			  <div class="dealer-hand"></div>
+			  <div class="dealerCards"></div>
 			  </div>
 			  </div>
 			   </div>
@@ -44,23 +44,23 @@
 			    <span id="chips-left"></span>
 			  </div>
 			  <div class="player-stats">
-			    <span id="enteredBet"></span>
+			    <span id="submittedBet"></span>
 			    <br>
-			    <span id="split-bet"></span>
+			    <span id="splitBet"></span>
 			  </div>
 			  <div class="button-container ">
-			   <button type="button" class="btn btn-danger game-button" id="hit-button" style="display: none">Hit</button>
-			   <button type="button" class="btn btn-danger game-button" id="stand-button" style="display: none">Stand</button>
-			   <button type="button" class="btn btn-danger" id="double-button" style="display: none">Double</button>
-			   <button type="button" class="btn btn-danger" id="split-button" style="display: none">Split</button>
+			   <button type="button" class="btn btn-danger game-button" id="hitButton" style="display: none">Hit</button>
+			   <button type="button" class="btn btn-danger game-button" id="standButton" style="display: none">Stand</button>
+			   <button type="button" class="btn btn-danger" id="doubleButton" style="display: none">Double</button>
+			   <button type="button" class="btn btn-danger" id="splitButton" style="display: none">Split</button>
 			   <form class="form-inline">
-			     <input type="number" class="form-control" id="bet-input" placeholder="Enter Your Bet Amount!">
-			     <button type="button" class="btn btn-danger" id="bet-button">Bet</button>
+			     <input type="number" class="form-control" id="betAmount" placeholder="Enter Your Bet!">
+			     <button type="button" class="btn btn-danger" id="betButton">Bet</button>
 			   </form>
-			   <button class="btn btn-danger" id="reset-button" style="display: none">Reset</button>
-			   <button class="btn btn-danger" id="clear-button" style="display: none">Clear</button>
-			   <button class="btn btn-danger" id="deal-button" style="display: none">Deal</button>
-			   <button class="btn btn-danger" id="play-again-button" style="display: none">Play Again</button>
+			   <button class="btn btn-danger" id="resetButton" style="display: none">Reset</button>
+			   <button class="btn btn-danger" id="clearButton" style="display: none">Clear</button>
+			   <button class="btn btn-danger" id="dealButton" style="display: none">Deal</button>
+			   <button class="btn btn-danger" id="playAgain" style="display: none">Play Again</button>
 			  </div>
 			 </div>
 			 </div>
