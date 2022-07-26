@@ -1,4 +1,4 @@
-// blackjack global variables
+// blackjack globalletiables
 
 
 let money = 100;
@@ -318,7 +318,7 @@ function dealerTakeCard() {
 }
 
 function scoreGame() {
-    var count = (currentHand === "splitHand") ? splitCount : playerCount;
+   let count = (currentHand === "splitHand") ? splitCount : playerCount;
 
     if (dealerCount > 21 && count < 22) {
         $('blockquote').append(`<p class="mb-0 message">Dealer Busts! You win $${playerBet}.</p>`); // if dealer busts and player doesn't
@@ -352,7 +352,7 @@ function scoreGame() {
 }
 
 function playerBust() {
-    var count = (currentHand === "splitHand") ? splitCount : playerCount;
+   let count = (currentHand === "splitHand") ? splitCount : playerCount;
     if (count > 21) {
         if (currentHand === "splitHand") {
             $('blockquote').append(`<p class="mb-0 message">Your Split Hand Busted! You lose $${playerBet}.</p>`);
@@ -375,7 +375,7 @@ function playerBust() {
 }
 
 function loseBet() {
-    var bet = (currentHand === "splitHand") ? splitBet : playerBet;
+   let bet = (currentHand === "splitHand") ? splitBet : playerBet;
     money -= bet;
     moneyElement();
 
@@ -391,7 +391,7 @@ function loseBet() {
 }
 
 function winBet() {
-    var bet = (currentHand === "splitHand") ? splitBet : playerBet;
+   let bet = (currentHand === "splitHand") ? splitBet : playerBet;
     money += parseInt(bet);
     moneyElement();
     if (currentHand === "splitHand") {
@@ -413,7 +413,7 @@ function draw() {
 
 
 function blackjack() {
-    var bet = (currentHand === "splitHand") ? splitBet : playerBet;
+   let bet = (currentHand === "splitHand") ? splitBet : playerBet;
     money += (parseInt(bet) * 1.5);
     moneyElement();
     if (currentHand === "splitHand") {
