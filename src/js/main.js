@@ -1,6 +1,4 @@
 // blackjack globalletiables
-
-
 let money = 100;
 let deck = [];
 let playerCards = [];
@@ -18,7 +16,7 @@ moneyElement();
 
 
 function moneyElement() {
-    document.getElementById('money-left').innerText = `Playing Money: $${money}`; 
+    document.getElementById('money-left').innerText = `Playing Money: $${money}`;
 }
 
 function betElement() {
@@ -30,7 +28,7 @@ function splitBetElement() {
 }
 
 
-document.querySelector('#dealButton').addEventListener('click', dealHand); 
+document.querySelector('#dealButton').addEventListener('click', dealHand);
 document.querySelector('#betButton').addEventListener('click', makeBet);
 document.querySelector('#clearButton').addEventListener('click', clearBet);
 document.querySelector('#doubleButton').addEventListener('click', doubleBet);
@@ -85,15 +83,14 @@ function makeBet() {
         betElement();
         $('#clearButton, #dealButton, .form-inline').toggle(); // show clear button and deal button
     } else {
-        console.log('error'); 
+        console.log('error');
     }
 }
-
-function clearBet() {
+function clearBet() { // clear bet
     playerBet = 0;
     betElement();
-    document.querySelector('#betAmount').value = 'Enter Bet Amount'; 
-    document.getElementById('submittedBet').innerHTML = ''; 
+    document.querySelector('#betAmount').value = 'Enter Bet Amount';
+    document.getElementById('submittedBet').innerHTML = '';
     moneyElement();
     $('#clearButton, #dealButton, .form-inline').toggle(); // hide clear button and deal button
 }
@@ -106,7 +103,7 @@ function dealHand() {
         nextCard = deck.pop();
         playerCards.push(nextCard);
     }
-        
+
     for (i = 0; i < 2; i++) {
         nextCard = deck.pop()
         dealerCards.push(nextCard);
@@ -120,7 +117,7 @@ function dealHand() {
 
     $('#clearButton, #dealButton, .game-button, #doubleButton').toggle(); // hide deal button and clear button
     updateCounts(); // update counts
-    
+
     if (playerCount === 21 && dealerCount < 21) {    // if player has blackjack and dealer doesn'toggle splitButton();
         blackjack();
     }
@@ -152,7 +149,7 @@ function dealHand() {
             $('#doubleButton').show();
             currentHand = "playerHand";
         }
-    } 
+    }
 
 function toggleSplit() {
     const secondCard = playerCards[1];
@@ -199,17 +196,17 @@ function updateCounts() {
 
 function getHandValue(playerType) {
     let hand = handOf(playerType);
-    let count = 0; 
+    let count = 0;
     if (hand.length > 2) {
         sortAces(hand);
     }
 
     hand.forEach(function(card) {
         if (card.split('').includes('A') && count < 11) { // if card is an ace and count is less than 11
-            count += 11; 
+            count += 11;
         } else if (card.split('').includes('A') && count > 11) { // if card is an ace and count is greater than 11
             count += 1;
-        } else if (card.split('').includes('2')) { 
+        } else if (card.split('').includes('2')) {
             count += 2;
         } else if (card.split('').includes('3')) {
             count += 3;
@@ -237,11 +234,11 @@ function getHandValue(playerType) {
     });
     return count;
 }
- 
-function handOf(playerType) {   // get player's hand 
-    if (playerType === "dealer") { 
+
+function handOf(playerType) {   // get player's hand
+    if (playerType === "dealer") {
         return dealerCards;
-    } else if (playerType === "player") { 
+    } else if (playerType === "player") {
         return playerCards;
     } else if (playerType === "split") {
         return splitCards;
@@ -250,7 +247,7 @@ function handOf(playerType) {   // get player's hand
 
 function sortAces(hand) { // sort aces in hand
     for(i = 0; i < hand.length; i++) {
-        if(hand[i].charAt(hand[i].length - 1) === "A") { // if card is an ace and count is less than 11  
+        if(hand[i].charAt(hand[i].length - 1) === "A") { // if card is an ace and count is less than 11
             hand.push(hand.splice(i, 1) [0]); // add ace to end of hand
         }
     }
@@ -261,12 +258,12 @@ function takeCard() {
 }
 
 function playerTakeCard() {
-    nextCard = deck.pop() 
+    nextCard = deck.pop()
     playerCards.push(nextCard); // add card to player's hand
-    $('.playerCards').append(`<div class="playing-card ${playerCards[playerCards.length - 1]}"></div>`); 
+    $('.playerCards').append(`<div class="playing-card ${playerCards[playerCards.length - 1]}"></div>`);
     if (playerCards.length > 2) { // if player has more than 2 cards
         $('#doubleButton, #splitButton').hide(); // hide double and split buttons
-    } 
+    }
     updateCounts();
 }
 
@@ -309,7 +306,7 @@ function dealerHand() {
 function dealerTakeCard() {
     nextCard = deck.pop()
     dealerCards.push(nextCard);
-    $('.dealerCards').append(`<div class="playing-card ${dealerCards[dealerCards.length - 1]}"></div>`);  
+    $('.dealerCards').append(`<div class="playing-card ${dealerCards[dealerCards.length - 1]}"></div>`);
     dealerCount = getHandValue("dealer");
     console.log(`dealer count ${dealerCount}`);
     if (dealerCount < 17) {
