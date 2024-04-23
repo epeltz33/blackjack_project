@@ -1,2 +1,2 @@
-# project1-blackjack
-blackjack project
+
+blackjack project for comp-166
