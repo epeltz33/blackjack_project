@@ -116,7 +116,7 @@ function dealHand() {
     $('.dealerCards').append(`<div class="playing-card ${dealerCards[0]}"></div>`);
     $('.dealerCards').append(`<div class="playing-card back-blue" id="face-down-card"></div>`);
 
-    $('.player-count, .dealer-count').empty().show(); // Clear and show the count elements
+    $('.player-count').empty().show(); // Clear and show the player count element
 
     $('#clearButton, #dealButton, .game-button, #doubleButton').toggle(); // hide deal button and clear button
     updateCounts(); // update counts
@@ -126,7 +126,6 @@ function dealHand() {
     }
     toggleSplit();
 }
-
  function doubleBet() {
     let bet = (currentHand === "splitHand") ? splitBet : playerBet; // if current hand is split, use split bet
         if (currentHand === "playerHand") {
@@ -190,7 +189,7 @@ function updateCounts() {
     splitCount = getHandValue("split");
 
     $('.player-count').text(`Player Count: ${playerCount}`);
-    $('.dealer-count').text(`Dealer Count: ${dealerCount}`);
+
 
     console.log(`player count ${playerCount}`);
     console.log(`dealer count ${dealerCount}`);
@@ -430,14 +429,14 @@ function blackjack() {
 
 function playAgain() {
     $('.form-inline, #playAgain').toggle();
-    $('.player-count, .dealer-count').hide(); // Hide the count elements
+    $('.player-count').hide(); // Hide the player count element
     init();
 }
 
 function resetGame() {
     $('.form-inline, #resetButton').toggle();
     $('.game-button, #playAgain').hide();
-    $('.player-count, .dealer-count').hide(); // Hide the count elements
+    $('.player-count').hide(); // Hide the player count element
     money = 100;
     init();
 }
