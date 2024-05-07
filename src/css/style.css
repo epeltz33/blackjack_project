@@ -11,6 +11,14 @@ h1 {
   color: #e9e3d7;
 }
 
+.player-count,
+.dealer-count {
+  margin-top: 10px;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+}
+
 .dealerCards,
 .playerCards {
   height: 5.3 em;

@@ -54,6 +54,7 @@ function init() {
     moneyElement();
     betElement();
     $('.playing-card, .message').remove();
+    $('.player-count, .dealer-count').hide(); // Hide the count elements
     resetDeck();
 }
 
@@ -96,7 +97,7 @@ function clearBet() { // clear bet
 }
 
 function dealHand() {
-    shuffleDeck()
+    shuffleDeck();
 
     let nextCard = [];
     for (i = 0; i < 2; i++) {
@@ -105,15 +106,17 @@ function dealHand() {
     }
 
     for (i = 0; i < 2; i++) {
-        nextCard = deck.pop()
+        nextCard = deck.pop();
         dealerCards.push(nextCard);
     }
 
-    $('.playerCards').append(`<div class="playing-card ${playerCards[0]}"></div>`); // player's first card
-    $('.playerCards').append(`<div class="playing-card ${playerCards[1]}"></div>`); // player's second card
+    $('.playerCards').append(`<div class="playing-card ${playerCards[0]}"></div>`);
+    $('.playerCards').append(`<div class="playing-card ${playerCards[1]}"></div>`);
 
-    $('.dealerCards').append(`<div class="playing-card ${dealerCards[0]}"></div>`); // dealer's first card
-    $('.dealerCards').append(`<div class="playing-card back-blue" id="face-down-card"></div>`); // dealer's second card
+    $('.dealerCards').append(`<div class="playing-card ${dealerCards[0]}"></div>`);
+    $('.dealerCards').append(`<div class="playing-card back-blue" id="face-down-card"></div>`);
+
+    $('.player-count, .dealer-count').empty().show(); // Clear and show the count elements
 
     $('#clearButton, #dealButton, .game-button, #doubleButton').toggle(); // hide deal button and clear button
     updateCounts(); // update counts
@@ -185,6 +188,9 @@ function updateCounts() {
     playerCount = getHandValue("player");
     dealerCount = getHandValue("dealer");
     splitCount = getHandValue("split");
+
+    $('.player-count').text(`Player Count: ${playerCount}`);
+    $('.dealer-count').text(`Dealer Count: ${dealerCount}`);
 
     console.log(`player count ${playerCount}`);
     console.log(`dealer count ${dealerCount}`);
@@ -424,14 +430,15 @@ function blackjack() {
 
 function playAgain() {
     $('.form-inline, #playAgain').toggle();
+    $('.player-count, .dealer-count').hide(); // Hide the count elements
     init();
 }
 
 function resetGame() {
     $('.form-inline, #resetButton').toggle();
     $('.game-button, #playAgain').hide();
+    $('.player-count, .dealer-count').hide(); // Hide the count elements
     money = 100;
     init();
 }
-
 init();
