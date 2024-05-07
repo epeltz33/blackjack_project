@@ -1,5 +1,5 @@
 // blackjack globalletiables
-let money = 100;
+let money = 200;
 let deck = [];
 let playerCards = [];
 let splitCards = [];
@@ -422,7 +422,7 @@ function blackjack() {
         $('blockquote').append(`<p class="mb-0 message">Your Split Hand Got Blackjack!! You win $${playerBet * 3}.</p>`);
         currentHand = "playerHand";
     } else {
-        $('blockquote').append(`<p class="mb-0 message">Blackjack!! You win $${playerBet * 1.5}.</p>`);
+        $('blockquote').append(`<p class="mb-0 message">Blackjack!! You win $${playerBet * 1.5}.</p>`); // if player has blackjack and dealer doesn't toggle splitButton();
     }
     $('.game-button, #doubleButton, #playAgain').toggle();
 }
