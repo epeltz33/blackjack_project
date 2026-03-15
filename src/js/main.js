@@ -1,4 +1,4 @@
-// blackjack globalletiables
+// ── Global state ──────────────────────────────────────────────
 let money = 200;
 let deck = [];
 let playerCards = [];
@@ -10,38 +10,106 @@ let playerCount = 0;
 let splitCount = 0;
 let dealerCount = 0;
 let currentHand = "";
+let holeCardRevealed = false;
 
+// ── DOM helpers ───────────────────────────────────────────────
+
+function qs(sel)  { return document.querySelector(sel); }
+function qsa(sel) { return document.querySelectorAll(sel); }
+
+function show(sel, display) {
+    qsa(sel).forEach(function(el) { el.style.display = display || 'block'; });
+}
+function hide(sel) {
+    qsa(sel).forEach(function(el) { el.style.display = 'none'; });
+}
+function setText(sel, text) {
+    qsa(sel).forEach(function(el) { el.textContent = text; });
+}
+function appendCard(containerSel, cardClass) {
+    const div = document.createElement('div');
+    div.className = 'playing-card ' + cardClass;
+    qs(containerSel).appendChild(div);
+}
+function appendMessage(html) {
+    qs('blockquote').insertAdjacentHTML('beforeend', html);
+}
+function removeAll(sel) {
+    qsa(sel).forEach(function(el) { el.remove(); });
+}
+
+// ── UI phase helpers ──────────────────────────────────────────
+
+// Called by init() — resets to the initial betting state
+function showBetPhase() {
+    show('.bet-phase', 'flex');
+    show('#bet-input-row', 'flex');
+    hide('#bet-action-row');
+    hide('.play-phase');
+    hide('.post-hand');
+    hide('#splitButton');
+}
+
+// After a valid bet is placed: hide input, show Clear + Deal
+function showBetActions() {
+    hide('#bet-input-row');
+    show('#bet-action-row', 'flex');
+}
+
+// After Deal: hide bet controls, show play buttons
+function showPlayPhase() {
+    hide('.bet-phase');
+    show('.play-phase', 'flex');
+    show('#hitButton');
+    show('#standButton');
+    show('#doubleButton');
+    hide('#splitButton');
+}
+
+// After a hand resolves: hide play buttons, show the appropriate end-of-hand button
+function endHand(which) {
+    hide('.play-phase');
+    show('.post-hand', 'flex');
+    if (which === 'reset') {
+        hide('#playAgain');
+        show('#resetButton');
+    } else {
+        show('#playAgain');
+        hide('#resetButton');
+    }
+}
+
+// ── Event listeners ───────────────────────────────────────────
 
 moneyElement();
 
+qs('#dealButton').addEventListener('click', dealHand);
+qs('#betButton').addEventListener('click', makeBet);
+qs('#clearButton').addEventListener('click', clearBet);
+qs('#doubleButton').addEventListener('click', doubleBet);
+qs('#hitButton').addEventListener('click', takeCard);
+qs('#playAgain').addEventListener('click', playAgain);
+qs('#standButton').addEventListener('click', stand);
+qs('#splitButton').addEventListener('click', split);
+qs('#resetButton').addEventListener('click', resetGame);
+
+// ── Display helpers ───────────────────────────────────────────
 
 function moneyElement() {
-    document.getElementById('money-left').innerText = `Playing Money: $${money}`;
+    qs('#money-left').textContent = 'Playing Money: $' + money;
 }
-
 function betElement() {
-    document.getElementById('submittedBet').innerHTML = `Bet amount: $${playerBet}`;
+    qs('#submittedBet').textContent = playerBet > 0 ? 'Bet: $' + playerBet : '';
 }
-
 function splitBetElement() {
-    document.getElementById('splitBet').innerHTML = `Split Bet amount: $${splitBet}`;
+    qs('#splitBet').textContent = 'Split bet: $' + splitBet;
 }
 
-
-document.querySelector('#dealButton').addEventListener('click', dealHand);
-document.querySelector('#betButton').addEventListener('click', makeBet);
-document.querySelector('#clearButton').addEventListener('click', clearBet);
-document.querySelector('#doubleButton').addEventListener('click', doubleBet);
-document.querySelector('#hitButton').addEventListener('click', takeCard);
-document.querySelector('#playAgain').addEventListener('click', playAgain);
-document.querySelector('#standButton').addEventListener('click', stand);
-document.querySelector('#splitButton').addEventListener('click', split);
-document.querySelector('#resetButton').addEventListener('click', resetGame);
-
-
+// ── Init ──────────────────────────────────────────────────────
 
 function init() {
     currentHand = "playerHand";
+    holeCardRevealed = false;
     playerCards = [];
     splitCards = [];
     dealerCards = [];
@@ -50,124 +118,137 @@ function init() {
     dealerCount = 0;
     playerBet = 0;
     splitBet = 0;
-    document.getElementById('splitBet').innerHTML = '';   // clear split bet
+    qs('#splitBet').textContent = '';
+    qs('#betAmount').value = '';
     moneyElement();
     betElement();
-    $('.playing-card, .message').remove();
-    $('.player-count, .dealer-count').hide(); // Hide the count elements
+    removeAll('.playing-card');
+    removeAll('.message');
+    setText('.player-count, .dealer-count, .split-count', '');
+    showBetPhase();
     resetDeck();
 }
 
-// populate card deck
-function resetDeck() { // reset deck
+// ── Deck ──────────────────────────────────────────────────────
+
+function resetDeck() {
     deck = [];
-    let suits = ['d', 'h', 's', 'c']; // diamonds, hearts, spades, clubs
-    for (i = 0; i < suits.length; i++) {
-        let cards = ['A', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K']; // ace, 2-10, jack, queen, king
-        for (j = 0; j < cards.length; j++) {
-            deck.push(suits[i] + cards[j]); // add card to deck
+    let suits = ['d', 'h', 's', 'c'];
+    for (let i = 0; i < suits.length; i++) {
+        let cards = ['A', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K'];
+        for (let j = 0; j < cards.length; j++) {
+            deck.push(suits[i] + cards[j]);
         }
     }
 }
 
 function shuffleDeck() {
     let count = deck.length;
-    while(count) {
-        deck.push(deck.splice(Math.floor(Math.random() * count), 1) [0]);  // move a random element to the end of the array and decrement the count
+    while (count) {
+        deck.push(deck.splice(Math.floor(Math.random() * count), 1)[0]);
         count -= 1;
     }
 }
 
+// ── Betting ───────────────────────────────────────────────────
+
 function makeBet() {
-    playerBet = document.querySelector('#betAmount').value  //  get bet amount
-    if (playerBet <= money && playerBet > 0) { // if bet is less than or equal to money and greater than 0
+    playerBet = qs('#betAmount').value;
+    if (playerBet <= money && playerBet > 0) {
         betElement();
-        $('#clearButton, #dealButton, .form-inline').toggle(); // show clear button and deal button
+        showBetActions();
     } else {
         console.log('error');
     }
 }
-function clearBet() { // clear bet
+
+function clearBet() {
     playerBet = 0;
     betElement();
-    document.querySelector('#betAmount').value = 'Enter Bet Amount';
-    document.getElementById('submittedBet').innerHTML = '';
+    qs('#betAmount').value = '';
+    qs('#submittedBet').textContent = '';
     moneyElement();
-    $('#clearButton, #dealButton, .form-inline').toggle(); // hide clear button and deal button
+    showBetPhase();
 }
+
+// ── Dealing ───────────────────────────────────────────────────
 
 function dealHand() {
     shuffleDeck();
 
-    let nextCard = [];
-    for (i = 0; i < 2; i++) {
+    let nextCard;
+    for (let i = 0; i < 2; i++) {
         nextCard = deck.pop();
         playerCards.push(nextCard);
     }
-
-    for (i = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
         nextCard = deck.pop();
         dealerCards.push(nextCard);
     }
 
-    $('.playerCards').append(`<div class="playing-card ${playerCards[0]}"></div>`);
-    $('.playerCards').append(`<div class="playing-card ${playerCards[1]}"></div>`);
+    appendCard('.playerCards', playerCards[0]);
+    appendCard('.playerCards', playerCards[1]);
+    appendCard('.dealerCards', dealerCards[0]);
 
-    $('.dealerCards').append(`<div class="playing-card ${dealerCards[0]}"></div>`);
-    $('.dealerCards').append(`<div class="playing-card back-blue" id="face-down-card"></div>`);
+    // Face-down hole card needs an id so dealerHand() can flip it
+    const faceDown = document.createElement('div');
+    faceDown.className = 'playing-card back-blue';
+    faceDown.id = 'face-down-card';
+    qs('.dealerCards').appendChild(faceDown);
 
-    $('.player-count').empty().show(); // Clear and show the player count element
+    showPlayPhase();
+    updateCounts();
 
-    $('#clearButton, #dealButton, .game-button, #doubleButton').toggle(); // hide deal button and clear button
-    updateCounts(); // update counts
-
-    if (playerCount === 21 && dealerCount < 21) {    // if player has blackjack and dealer doesn'toggle splitButton();
+    if (playerCount === 21 && dealerCount < 21) {
         blackjack();
     }
     toggleSplit();
 }
- function doubleBet() {
-    let bet = (currentHand === "splitHand") ? splitBet : playerBet; // if current hand is split, use split bet
-        if (currentHand === "playerHand") {
-            playerBet *= 2;
-            betElement();
-            takeCard();
-            if (splitCards.length > 1) {
-                currentHand = "splitHand";
-                if (playerCount < 21) {
-                    dealerHand();
-                    scoreGame();
-                }
-            } else if (playerCount <= 21) {
+
+function doubleBet() {
+    if (currentHand === "playerHand") {
+        playerBet *= 2;
+        betElement();
+        takeCard();
+        if (splitCards.length > 1) {
+            currentHand = "splitHand";
+            if (playerCount < 21) {
                 dealerHand();
                 scoreGame();
-            } else {
-                return;
             }
+        } else if (playerCount <= 21) {
+            dealerHand();
+            scoreGame();
         } else {
-            splitBet *= 2;
-            splitBetElement();
-            takeCard();
-            $('#doubleButton').show();
-            currentHand = "playerHand";
+            return;
         }
+    } else {
+        splitBet *= 2;
+        splitBetElement();
+        takeCard();
+        show('#doubleButton');
+        currentHand = "playerHand";
     }
+}
+
+// ── Split ─────────────────────────────────────────────────────
 
 function toggleSplit() {
+    const firstCard  = playerCards[0];
     const secondCard = playerCards[1];
-    const firstCard = playerCards[0];
-    if (firstCard[firstCard.length - 1] === secondCard[secondCard.length - 1]) {
-        $('#splitButton').toggle();
+    if (firstCard && secondCard && firstCard.slice(1) === secondCard.slice(1)) {
+        const btn = qs('#splitButton');
+        btn.style.display = btn.style.display === 'none' ? 'inline-block' : 'none';
     }
 }
 
 function split() {
-    const secondCard = playerCards[1]; // get second card
-    $(`.playing-card.${playerCards[1]}`).remove(); // remove second card
-    splitCards = [secondCard]; // add second card to split cards
-    playersCards = playerCards.splice(0, 1); // remove first card from player cards
-    $('.splitCards').append(`<div class="playing-card ${secondCard}"></div>`); // add second card to split cards
-    $('#splitButton').toggle();
+    const secondCard = playerCards[1];
+    qs('.playing-card.' + playerCards[1]).remove();
+    splitCards = [secondCard];
+    playersCards = playerCards.splice(0, 1); // preserve original behaviour
+    appendCard('.splitCards', secondCard);
+    hide('#splitButton');
     splitBet = playerBet;
     splitBetElement();
     playerTakeCard();
@@ -183,21 +264,112 @@ function split() {
     currentHand = "splitHand";
 }
 
+// ── Card taking ───────────────────────────────────────────────
+
+function takeCard() {
+    if (currentHand === "splitHand") {
+        splitTakeCard();
+    } else {
+        playerTakeCard();
+    }
+}
+
+function playerTakeCard() {
+    let nextCard = deck.pop();
+    playerCards.push(nextCard);
+    appendCard('.playerCards', playerCards[playerCards.length - 1]);
+    if (playerCards.length > 2) {
+        hide('#doubleButton');
+        hide('#splitButton');
+    }
+    updateCounts();
+}
+
+function splitTakeCard() {
+    let nextCard = deck.pop();
+    splitCards.push(nextCard);
+    appendCard('.splitCards', splitCards[splitCards.length - 1]);
+    if (splitCards.length > 2) {
+        hide('#doubleButton');
+        hide('#splitButton');
+    }
+    updateCounts();
+}
+
+// ── Stand ─────────────────────────────────────────────────────
+
+function stand() {
+    if (splitCards.length < 1) {
+        dealerHand();
+        scoreGame();
+        hide('#doubleButton');
+        hide('#splitButton');
+    } else if (currentHand === "splitHand") {
+        currentHand = "playerHand";
+        show('#doubleButton');
+        toggleSplit();
+    } else {
+        currentHand = "splitHand";
+        dealerHand();
+        scoreGame();
+        hide('#doubleButton');
+        hide('#splitButton');
+    }
+}
+
+// ── Dealer ────────────────────────────────────────────────────
+
+function dealerHand() {
+    holeCardRevealed = true;
+    qs('#face-down-card').className = 'playing-card ' + dealerCards[1];
+    dealerCount = getHandValue("dealer");
+    setText('.dealer-count', 'Dealer: ' + dealerCount);
+    if (dealerCount < 17) {
+        dealerTakeCard();
+    }
+}
+
+function dealerTakeCard() {
+    let nextCard = deck.pop();
+    dealerCards.push(nextCard);
+    appendCard('.dealerCards', dealerCards[dealerCards.length - 1]);
+    dealerCount = getHandValue("dealer");
+    setText('.dealer-count', 'Dealer: ' + dealerCount);
+    console.log('dealer count ' + dealerCount);
+    if (dealerCount < 17) {
+        dealerTakeCard();
+    }
+}
+
+// ── Counts ────────────────────────────────────────────────────
+
 function updateCounts() {
     playerCount = getHandValue("player");
     dealerCount = getHandValue("dealer");
-    splitCount = getHandValue("split");
+    splitCount  = getHandValue("split");
 
-    $('.player-count').text(`Player Count: ${playerCount}`);
+    setText('.player-count', 'Player: ' + playerCount);
 
+    if (holeCardRevealed) {
+        setText('.dealer-count', 'Dealer: ' + dealerCount);
+    } else if (dealerCards.length > 0) {
+        setText('.dealer-count', 'Dealer: ?');
+    }
 
-    console.log(`player count ${playerCount}`);
-    console.log(`dealer count ${dealerCount}`);
-    console.log(`split count ${splitCount}`);
+    if (splitCards.length > 0) {
+        setText('.split-count', 'Split: ' + splitCount);
+    } else {
+        setText('.split-count', '');
+    }
+
+    console.log('player count ' + playerCount);
+    console.log('dealer count ' + dealerCount);
+    console.log('split count '  + splitCount);
 
     playerBust();
 }
 
+// ── Core game logic (algorithms unchanged) ────────────────────
 
 function getHandValue(playerType) {
     let hand = handOf(playerType);
@@ -205,11 +377,10 @@ function getHandValue(playerType) {
     if (hand.length > 2) {
         sortAces(hand);
     }
-
     hand.forEach(function(card) {
-        if (card.split('').includes('A') && count < 11) { // if card is an ace and count is less than 11
+        if (card.split('').includes('A') && count < 11) {
             count += 11;
-        } else if (card.split('').includes('A') && count > 11) { // if card is an ace and count is greater than 11
+        } else if (card.split('').includes('A') && count > 11) {
             count += 1;
         } else if (card.split('').includes('2')) {
             count += 2;
@@ -240,7 +411,7 @@ function getHandValue(playerType) {
     return count;
 }
 
-function handOf(playerType) {   // get player's hand
+function handOf(playerType) {
     if (playerType === "dealer") {
         return dealerCards;
     } else if (playerType === "player") {
@@ -250,157 +421,95 @@ function handOf(playerType) {   // get player's hand
     }
 }
 
-function sortAces(hand) { // sort aces in hand
-    for(i = 0; i < hand.length; i++) {
-        if(hand[i].charAt(hand[i].length - 1) === "A") { // if card is an ace and count is less than 11
-            hand.push(hand.splice(i, 1) [0]); // add ace to end of hand
+function sortAces(hand) {
+    for (let i = 0; i < hand.length; i++) {
+        if (hand[i].charAt(hand[i].length - 1) === "A") {
+            hand.push(hand.splice(i, 1)[0]);
         }
     }
 }
 
-function takeCard() {
-    let cards = (currentHand === "splitHand") ? splitTakeCard() : playerTakeCard(); // if current hand is split, use split take card
-}
-
-function playerTakeCard() {
-    nextCard = deck.pop()
-    playerCards.push(nextCard); // add card to player's hand
-    $('.playerCards').append(`<div class="playing-card ${playerCards[playerCards.length - 1]}"></div>`);
-    if (playerCards.length > 2) { // if player has more than 2 cards
-        $('#doubleButton, #splitButton').hide(); // hide double and split buttons
-    }
-    updateCounts();
-}
-
-function splitTakeCard() {
-    nextCard = deck.pop()
-    splitCards.push(nextCard);
-    $('.splitCards').append(`<div class="playing-card ${splitCards[splitCards.length - 1]}"></div>`);
-    if (splitCards.length > 2) {
-        $('#doubleButton, #splitButton').hide();
-    }
-    updateCounts();
-}
-
-function stand() {
-    if (splitCards.length < 1) {
-        dealerHand();
-        scoreGame();
-        $('#doubleButton, #splitButton').hide();
-    } else if (currentHand === "splitHand") {
-        currentHand = "playerHand";
-        $('#doubleButton').show();
-        toggleSplit();
-    } else {
-        currentHand = "splitHand";
-        dealerHand();
-        scoreGame();
-        $('#doubleButton, #splitButton').hide();
-    }
-}
-
-function dealerHand() {
-    // reveals face down card
-    document.getElementById("face-down-card").className = `playing-card ${dealerCards[1]}`;
-    // dealer takes card if count lower than 17
-    if (dealerCount < 17) {
-        dealerTakeCard();
-    }
-}
-
-function dealerTakeCard() {
-    nextCard = deck.pop()
-    dealerCards.push(nextCard);
-    $('.dealerCards').append(`<div class="playing-card ${dealerCards[dealerCards.length - 1]}"></div>`);
-    dealerCount = getHandValue("dealer");
-    console.log(`dealer count ${dealerCount}`);
-    if (dealerCount < 17) {
-        dealerTakeCard();
-    }
-}
+// ── Scoring ───────────────────────────────────────────────────
 
 function scoreGame() {
-   let count = (currentHand === "splitHand") ? splitCount : playerCount;
+    let count = (currentHand === "splitHand") ? splitCount : playerCount;
 
     if (dealerCount > 21 && count < 22) {
-        $('blockquote').append(`<p class="mb-0 message">Dealer Busts! You win $${playerBet}.</p>`); // if dealer busts and player doesn't
+        appendMessage('<p class="message">Dealer Busts! You win $' + playerBet + '.</p>');
         winBet();
     } else if (dealerCount > 16 && count < 22 && dealerCount < count) {
         if (currentHand === "splitHand") {
-            $('blockquote').append(`<p class="mb-0 message">Your split hand beat the dealer! You win $${playerBet}.</p>`);
+            appendMessage('<p class="message">Your split hand beat the dealer! You win $' + playerBet + '.</p>');
         } else {
-            $('blockquote').append(`<p class="mb-0 message">You beat the dealer! You win $${playerBet}.</p>`);
+            appendMessage('<p class="message">You beat the dealer! You win $' + playerBet + '.</p>');
         }
         winBet();
     } else if (dealerCount > 16 && count < 22 && dealerCount > count) {
         if (currentHand === "splitHand") {
-            $('blockquote').append(`<p class="mb-0 message">Your split hand lost to the dealer! You lose $${playerBet}.</p>`);
+            appendMessage('<p class="message">Your split hand lost to the dealer! You lose $' + playerBet + '.</p>');
         } else {
-            $('blockquote').append(`<p class="mb-0 message">You lost to the dealer! You lose $${playerBet}.</p>`);
+            appendMessage('<p class="message">You lost to the dealer! You lose $' + playerBet + '.</p>');
         }
         loseBet();
     } else if (dealerCount === count) {
         if (currentHand === "splitHand") {
-            $('blockquote').append(`<p class="mb-0 message">It's a draw on your split hand. Take your money back.</p>`);
+            appendMessage("<p class=\"message\">It's a draw on your split hand. Take your money back.</p>");
         } else {
-            $('blockquote').append(`<p class="mb-0 message">It's a draw on your hand. Take your money back.</p>`);
+            appendMessage("<p class=\"message\">It's a draw on your hand. Take your money back.</p>");
         }
         draw();
     } else if (count > 21) {
         loseBet();
     } else {
-        $('.game-button').toggle();
+        hide('.play-phase');
     }
 }
 
 function playerBust() {
-   let count = (currentHand === "splitHand") ? splitCount : playerCount;
+    let count = (currentHand === "splitHand") ? splitCount : playerCount;
     if (count > 21) {
         if (currentHand === "splitHand") {
-            $('blockquote').append(`<p class="mb-0 message">Your Split Hand Busted! You lose $${playerBet}.</p>`);
+            appendMessage('<p class="message">Your Split Hand Busted! You lose $' + playerBet + '.</p>');
             currentHand = "playerHand";
-                updateCounts();
-                $('#doubleButton').show();
+            updateCounts();
+            show('#doubleButton');
         } else if (splitCards.length < 1) {
-            $('blockquote').append(`<p class="mb-0 message">You Busted! You lose $${playerBet}.</p>`);
+            appendMessage('<p class="message">You Busted! You lose $' + playerBet + '.</p>');
             loseBet();
             dealerHand();
         } else {
-            $('blockquote').append(`<p class="mb-0 message">You Busted! You lose $${playerBet}.</p>`);
+            appendMessage('<p class="message">You Busted! You lose $' + playerBet + '.</p>');
             currentHand = "splitHand";
             dealerHand();
             scoreGame();
         }
-    } else {
-        return;
     }
 }
 
 function loseBet() {
-   let bet = (currentHand === "splitHand") ? splitBet : playerBet;
+    let bet = (currentHand === "splitHand") ? splitBet : playerBet;
     money -= bet;
     moneyElement();
-
     if (currentHand === "splitHand") {
         currentHand = "playerHand";
         scoreGame();
     } else if (money === 0) {
-        $('blockquote').append(`<p class="mb-0 message">You're out of money! Click Reset Game to play again!</p>`);
-        $('.game-button, #resetButton').toggle();
+        appendMessage("<p class=\"message\">You're out of money! Click Reset Game to play again!</p>");
+        endHand('reset');
     } else {
-        $('.game-button, #playAgain').toggle();
+        endHand('playAgain');
     }
 }
 
 function winBet() {
-   let bet = (currentHand === "splitHand") ? splitBet : playerBet;
+    let bet = (currentHand === "splitHand") ? splitBet : playerBet;
     money += parseInt(bet);
     moneyElement();
     if (currentHand === "splitHand") {
         currentHand = "playerHand";
         scoreGame();
     } else {
-        $('.game-button, #playAgain').toggle();
+        endHand('playAgain');
     }
 }
 
@@ -409,35 +518,34 @@ function draw() {
         currentHand = "playerHand";
         scoreGame();
     } else {
-        $('.game-button, #playAgain').toggle();
+        endHand('playAgain');
     }
 }
 
-
 function blackjack() {
-   let bet = (currentHand === "splitHand") ? splitBet : playerBet;
+    let bet = (currentHand === "splitHand") ? splitBet : playerBet;
     money += (parseInt(bet) * 1.5);
     moneyElement();
     if (currentHand === "splitHand") {
-        $('blockquote').append(`<p class="mb-0 message">Your Split Hand Got Blackjack!! You win $${playerBet * 3}.</p>`);
+        appendMessage('<p class="message">Your Split Hand Got Blackjack!! You win $' + (playerBet * 3) + '.</p>');
         currentHand = "playerHand";
     } else {
-        $('blockquote').append(`<p class="mb-0 message">Blackjack!! You win $${playerBet * 1.5}.</p>`); // if player has blackjack and dealer doesn't toggle splitButton();
+        appendMessage('<p class="message">Blackjack!! You win $' + (playerBet * 1.5) + '.</p>');
     }
-    $('.game-button, #doubleButton, #playAgain').toggle();
+    endHand('playAgain');
 }
 
+// ── Between hands ─────────────────────────────────────────────
+
 function playAgain() {
-    $('.form-inline, #playAgain').toggle();
-    $('.player-count').hide(); // Hide the player count element
+    hide('.post-hand');
     init();
 }
 
 function resetGame() {
-    $('.form-inline, #resetButton').toggle();
-    $('.game-button, #playAgain').hide();
-    $('.player-count').hide(); // Hide the player count element
+    hide('.post-hand');
     money = 100;
     init();
 }
+
 init();

@@ -1,127 +1,219 @@
-* {
+/* ── Custom properties ─────────────────────────────────────── */
+:root {
+  --felt:        #006330;
+  --felt-light:  #00763a;
+  --text:        #e9e3d7;
+  --btn-red:     #c0392b;
+  --btn-orange:  #d35400;
+  --radius:      8px;
+}
+
+/* ── Reset / base ──────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 body {
-  background-color: #006330;
+  background-color: var(--felt);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-h1 {
-  padding-top: 20px;
-  color: #e9e3d7;
-}
-
-.player-count,
-.dealer-count {
-  margin-top: 10px;
-  font-size: 20px;
+/* ── Header ────────────────────────────────────────────────── */
+.site-header {
   text-align: center;
-  color: white;
+  padding: 20px 16px 8px;
 }
 
-.dealerCards,
-.playerCards {
-  height: 5.3 em;
+.site-header h1 {
+  color: var(--text);
+  font-size: 2.5rem;
+  margin: 0;
 }
 
-.playerCards {
-  margin-bottom: 10px;
+.site-header p {
+  color: var(--text);
+  margin: 4px 0 0;
+  font-size: 1.05rem;
 }
 
-h1 {
-  padding-top: 25px;
-  color: #cecbc5;
+/* ── Page layout ───────────────────────────────────────────── */
+.game-main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "dealer  player"
+    "message message";
+  gap: 16px;
+  align-items: start;
+}
+
+.dealer-panel  { grid-area: dealer;  }
+.player-panel  { grid-area: player;  }
+.message-area  { grid-area: message; }
+
+/* ── Panels ────────────────────────────────────────────────── */
+.panel {
+  background: var(--felt-light);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.panel h3 {
+  color: var(--text);
+  text-align: center;
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+}
+
+/* ── Message area ──────────────────────────────────────────── */
+.message-area {
+  text-align: center;
 }
 
 blockquote {
   color: white;
-  height: 2.5rem;
+  margin: 0;
+  min-height: 2rem;
+  font-size: 1.05rem;
 }
 
-p.mb-0.message {
-  font-size: 20px;
+.message {
+  margin: 2px 0;
 }
 
-.card {
-  padding: 0;
-  margin: 0 auto;
-  background: #00763a;
-  border: none;
-}
-
-.row {
+/* ── Card containers ───────────────────────────────────────── */
+.dealerCards,
+.playerCards,
+.splitCards {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 5.5em;
+  gap: 4px;
+  padding: 4px 0;
 }
 
-.player-info {
-  margin-bottom: 5px;
-  font-size: 25px;
-  display: flex;
-  justify-content: space-between;
-}
+.playerCards  { margin-bottom: 4px; }
+.splitCards   { margin-top: 8px;    }
 
-.card>p,
-span,
-h5 {
+/* ── Count labels ──────────────────────────────────────────── */
+.player-count,
+.dealer-count,
+.split-count {
+  min-height: 1.4em;
+  margin-top: 6px;
+  font-size: 1.05rem;
+  text-align: center;
   color: white;
 }
 
-.button-group,
-.form-inline {
+/* ── Player info ───────────────────────────────────────────── */
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 10px 0 6px;
+}
+
+.player-info span {
+  color: white;
+  font-size: 1rem;
+}
+
+/* ── Button phase wrappers ─────────────────────────────────── */
+.bet-phase,
+.play-phase,
+.post-hand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.play-phase,
+.post-hand {
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Button rows (inside bet-phase) ────────────────────────── */
+.btn-row {
   display: flex;
   justify-content: center;
-  margin: 10px auto;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.btn {
-  margin: 0 10px;
+/* ── Buttons ───────────────────────────────────────────────── */
+button {
+  padding: 9px 22px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  background-color: var(--btn-red);
+  color: white;
+  transition: opacity 0.15s;
+  white-space: nowrap;
 }
 
-img {
-  width: 286px;
-  display: flex;
-  margin: auto;
-  border-radius: 10px;
+button:hover  { opacity: 0.82; }
+button:active { opacity: 0.65; }
+
+#playAgain,
+#resetButton {
+  background-color: var(--btn-orange);
 }
 
-.mat {
-  width: 100%;
-  margin: -10px 0 -15px 0;
+/* ── Bet input ─────────────────────────────────────────────── */
+#betAmount {
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 1rem;
+  width: 160px;
+  font-family: inherit;
 }
 
-
-
+/* ── Playing card base ─────────────────────────────────────── */
 .playing-card {
   box-sizing: border-box;
   display: inline-block;
-  margin: 5px 5px 5px 5px;
+  margin: 3px;
   cursor: pointer;
-  /* card's dimensions, and size it relative to
-     it's font size. */
-  font-size: inherit;
+  font-size: 16px;
   width: 4.0em;
   height: 5.3em;
-  /* background color and border */
   background-color: white;
   border-radius: 0.20em;
   border: 1px solid #c3c3c3e9;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
-  /* "Hide" any text within the element */
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.35);
 }
 
-.playing-card.xlarge {
-  font-size: 42px;
-}
+/* ── Card size variants ────────────────────────────────────── */
+.playing-card.xlarge { font-size: 42px; }
+.playing-card.large  { font-size: 26px; }
+.playing-card.small  { font-size: 12px; }
 
-.playing-card.no-border {
-  border: 0;
-}
+.playing-card.no-border { border: 0; }
 
 .playing-card.shadow {
   box-shadow: 2px 2px 3px 0 rgba(41, 41, 41, 0.75);
@@ -133,13 +225,51 @@ img {
   border: 0.15em dashed #eeb420;
 }
 
-.playing-card.small {
-  font-size: 12px;
+.playing-card.west,
+.playing-card.W {
+  transform: rotate(90deg);
+  margin: auto 0.75em;
 }
 
-.playing-card.large {
-  font-size: 26px;
+.playing-card.west.shadow,
+.playing-card.W.shadow {
+  box-shadow: 2px -2px 3px 0 rgba(41, 40, 40, 0.75);
 }
+
+.playing-card.east,
+.playing-card.E {
+  transform: rotate(270deg);
+  margin: auto 0.75em;
+}
+
+.playing-card.east.shadow,
+.playing-card.E.shadow {
+  box-shadow: -2px 2px 3px 0 rgba(30, 30, 30, 0.75);
+}
+
+/* ── Mobile: single-column stack ──────────────────────────── */
+@media (max-width: 767px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "dealer"
+      "message"
+      "player";
+  }
+
+  .site-header h1  { font-size: 1.8rem; }
+  .playing-card    { font-size: 12px; margin: 2px; }
+  #betAmount       { width: 130px; }
+  button           { padding: 8px 14px; font-size: 0.9rem; }
+}
+
+@media (max-width: 400px) {
+  .playing-card    { font-size: 10px; }
+  .site-header h1  { font-size: 1.5rem; }
+  button           { padding: 7px 10px; font-size: 0.85rem; }
+}
+
+/* ── Card SVG backgrounds (do not modify) ──────────────────── */
 
 .playing-card.diamonds.A,
 .playing-card.dA,
@@ -158,7 +288,6 @@ img {
 .playing-card.♦Q {
   background-image: url("../images/diamonds/diamonds-Q.svg");
 }
-
 
 .playing-card.diamonds.J,
 .playing-card.dJ,
@@ -322,7 +451,6 @@ img {
   background-image: url("../images/spades/spades-J.svg");
 }
 
-
 .playing-card.spades.r10,
 .playing-card.s10,
 .playing-card.♠10 {
@@ -465,26 +593,4 @@ img {
 
 .playing-card.back-blue {
   background-image: url("../images/backs/blue.svg");
-}
-
-.playing-card.west,
-.playing-card.W {
-  transform: rotate(90deg);
-  margin: auto 0.75em;
-}
-
-.playing-card.west.shadow,
-.playing-card.W.shadow {
-  box-shadow: 2px -2px 3px 0 rgba(41, 40, 40, 0.75);
-}
-
-.playing-card.east,
-.playing-card.E {
-  transform: rotate(270deg);
-  margin: auto 0.75em;
-}
-
-.playing-card.east.shadow,
-.playing-card.E.shadow {
-  box-shadow: -2px 2px 3px 0 rgba(30, 30, 30, 0.75);
 }
