@@ -6,6 +6,6 @@
 node_modules/
 *.json
 .cursor
-.CLAUDE.md
+CLAUDE.md
 
 
